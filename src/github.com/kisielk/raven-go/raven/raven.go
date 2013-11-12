@@ -43,13 +43,89 @@ type Client struct {
 	httpClient *http.Client
 }
 
+type Stackframe struct {
+	Filename    string            `json:"filename"`
+	Function    string            `json:"function"`
+	Module      string            `json:"module"`
+	LineNo      int               `json:"lineno"`
+	ColNo       int               `json:"colno"`
+	AbsPath     string            `json:"abs_path"`
+	ContextLine string            `json:"context_line"`
+	PreContext  []string          `json:"pre_context"`
+	PostContext []string          `json:"post_context"`
+	InApp       bool              `json:"in_app"`
+	Vars        map[string]string `json:"vars"`
+}
+
+type Stacktrace struct {
+	// Required
+	Frames []Stackframe `json:"frames"`
+}
+
+type Exception struct {
+	Type       string     `json:"type"`
+	Value      string     `json:"value"`
+	Module     string     `json:"module"`
+	Stacktrace *Stacktrace `json:"stacktrace"`
+}
+
+type Message struct {
+	Message string   `json:"message"`
+	Params  []string `json:"params"`
+}
+
+type HttpRequest struct {
+	Url     string            `json:"url"`
+	Method  string            `json:"method"`
+	Data    map[string]string `json:"data"`
+	Query   string            `json:"query_string"`
+	Cookies []string          `json:"cookies"`
+	Headers map[string]string `json:"headers"`
+	Env     map[string]string `json:"env"`
+}
+
+type User struct {
+	ID        string `json:"id"`
+	UserName  string `json:"user_name"`
+	Email     string `json:"email"`
+	IPAddress string `json:"ip_address"`
+}
+
+type Template struct {
+	AbsPath     string   `json:"abs_path"`
+	FileName    string   `json:"filename"`
+	PreContext  []string `json:"pre_context"`
+	ContextLine []string `json:"context_line"`
+	LineNo      int      `json:"lineno"`
+	PostContext []string `json:"post_context"`
+}
+
+type Query struct {
+	Query  string `json:"query"`
+	Engine string `json:"engine"`
+}
+
 type Event struct {
-	EventId   string `json:"event_id"`
-	Project   string `json:"project"`
-	Message   string `json:"message"`
-	Timestamp string `json:"timestamp"`
-	Level     string `json:"level"`
-	Logger    string `json:"logger"`
+	EventId    string `json:"event_id"`
+	Project    string `json:"project"`
+	Message    string `json:"message"`
+	Timestamp  string `json:"timestamp"`
+	Level      string `json:"level"`
+	Logger     string `json:"logger"`
+	ServerName string `json:"server_name"`
+	Platform   string `json:"platform"`
+	Culprit    string `json:"culprit"`
+
+	// Mappings that are predefined in sentry for special use
+	Exception  *Exception         `json:"exception,omitempty"`
+	Request    *HttpRequest       `json:"request,omitempty"`
+	User       *User              `json:"user,omitempty"`
+	Stacktrace *Stacktrace        `json:"stacktrace.omitempty"`
+	Template   *Template          `json:"template,omitempty"`
+	Query      *Query             `json:"query,omitempty"`
+	Modules    map[string]string  `json:"modules,omitempty"`
+	Extra      map[string]string  `json:"extra,omitempty"`
+	Tags       map[string]string  `json:"tags,omitempty"`
 }
 
 type sentryResponse struct {
